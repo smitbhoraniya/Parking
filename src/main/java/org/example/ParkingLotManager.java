@@ -4,7 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class ParkingLotManager {
-    private List<ParkingLot> parkingLots;
+    private final List<ParkingLot> parkingLots;
 
     public ParkingLotManager(int numberOfParkingLots) {
         this.parkingLots = new ArrayList<ParkingLot>(numberOfParkingLots);
@@ -13,14 +13,14 @@ public class ParkingLotManager {
         }
     }
 
-    public ParkingSlot getAvailableParkingSlot() throws Exception {
+    public String park(Car car) throws Exception {
         for (ParkingLot parkingLot: parkingLots) {
-            ParkingSlot slot = parkingLot.getAvailableSlot();
-            if (slot != null) {
-                return slot;
+            String id = parkingLot.park(car);
+            if (id != null) {
+                return id;
             }
         }
 
-        throw new Exception("No slots available.");
+        return null;
     }
 }

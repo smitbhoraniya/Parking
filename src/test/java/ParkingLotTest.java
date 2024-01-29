@@ -15,49 +15,48 @@ public class ParkingLotTest {
     @Test
     public void inValidParkingLot() {
         Exception exception = assertThrows(IllegalArgumentException.class, () -> new ParkingLot(0));
-
         String actual = exception.getMessage();
         String expected = "Number of slots should be greater than zero.";
         assertEquals(expected, actual);
     }
 
     @Test
-    public void getAvailableParkingSlot() throws Exception {
-        ParkingLot parkingLot = new ParkingLot(5);
-        Car car = new Car("123Abc", CarColor.BLUE);
-
-        ParkingSlot slot = parkingLot.getAvailableSlot();
-
-        boolean actual = slot.isSlotFree();
-        boolean expected = true;
-        assertEquals(expected, actual);
-    }
-
-    @Test
     public void shouldParkCarInAvailableParkingSlot() throws Exception {
-        ParkingLot parkingLot = new ParkingLot(5);
+        ParkingLot parkingLot = new ParkingLot(1);
         Car car = new Car("123Abc", CarColor.BLUE);
-        ParkingSlot slot = parkingLot.getAvailableSlot();
 
-        slot.park(car);
+        parkingLot.park(car);
 
-        boolean actual = slot.isSlotFree();
-        boolean expected = false;
-        assertEquals(expected, actual);
+        assertTrue(parkingLot.isFull());
     }
 
     @Test
     public void shouldNotParkCarWhenParkingLotIsFull() throws Exception {
-        ParkingLot parkingLot = new ParkingLot(2);
+        ParkingLot parkingLot = new ParkingLot(1);
         Car car1 = new Car("123Abc", CarColor.WHITE);
         Car car2 = new Car("123Efg", CarColor.BLACK);
-        ParkingSlot slot1 = parkingLot.getAvailableSlot();
-        slot1.park(car1);
-        ParkingSlot slot2 = parkingLot.getAvailableSlot();
-        slot2.park(car2);
+        parkingLot.park(car1);
 
-        ParkingSlot slot = parkingLot.getAvailableSlot();
+        assertThrows(Exception.class, () -> parkingLot.park(car2));
+    }
 
-        assertNull(slot);
+    @Test
+    public void shouldUnParkTheCar() throws Exception {
+        ParkingLot parkingLot = new ParkingLot(2);
+        Car car1 = new Car("123Abc", CarColor.WHITE);
+        String id = parkingLot.park(car1);
+
+        Car car = parkingLot.unPark(id);
+
+        assertEquals(car1, car);
+    }
+
+    @Test
+    public void shouldNotUnParkTheCarWithInvalidId() throws Exception {
+        ParkingLot parkingLot = new ParkingLot(2);
+        Car car1 = new Car("123Abc", CarColor.WHITE);
+        String id = parkingLot.park(car1);
+
+        assertNull(parkingLot.unPark("123"));
     }
 }

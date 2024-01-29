@@ -1,42 +1,47 @@
 package org.example;
 
 import java.util.Objects;
+import java.util.UUID;
 
 public class ParkingSlot {
-    private String slotNumber;
-    private boolean isSlotAvailable = true;
     private Car car;
+    private String id;
 
-    public ParkingSlot(String slotNumber) {
-        this.slotNumber = slotNumber;
+    public boolean isFree() {
+        return this.car == null;
     }
 
-    public boolean isSlotFree() {
-        return this.isSlotAvailable;
-    }
-
-    public void park(Car car) throws Exception {
-        if (!this.isSlotAvailable) {
+    public String park(Car car) throws Exception {
+        if (!this.isFree()) {
             throw new Exception("Car is already parked in this slot.");
         }
-        this.isSlotAvailable = false;
         this.car = car;
+
+        this.id = UUID.randomUUID().toString();
+        return this.id;
     }
 
-    public Car unPark() throws Exception {
-        if (this.isSlotAvailable) {
+    public Car unPark(String id) throws Exception {
+        if (this.isFree()) {
             throw new Exception("Slot is empty.");
         }
-        this.isSlotAvailable = true;
+        if (!this.isValidId(id)) {
+            throw new Exception("Don't have an authorization to unpark.");
+        }
         Car car = this.car;
         this.car = null;
+        this.id = null;
         return car;
     }
 
     public boolean isValidCarParked(Car car) {
-        if (!this.isSlotAvailable) {
+        if (!this.isFree()) {
             return car == this.car;
         }
         return false;
+    }
+
+    public boolean isValidId(String id) {
+        return Objects.equals(this.id, id);
     }
 }
