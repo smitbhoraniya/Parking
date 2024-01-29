@@ -4,13 +4,13 @@ import java.util.ArrayList;
 import java.util.Optional;
 
 public class ParkingLot {
-    private ArrayList<ParkingSlot> slots;
+    private final ArrayList<ParkingSlot> slots;
 
     public ParkingLot(int numberOfSlots) {
         if (numberOfSlots <= 0) {
             throw new IllegalArgumentException("Number of slots should be greater than zero.");
         }
-        this.slots = new ArrayList<ParkingSlot>(numberOfSlots);
+        this.slots = new ArrayList<>(numberOfSlots);
         for (int i = 0; i < numberOfSlots; i++) {
             slots.add(new ParkingSlot());
         }
@@ -30,22 +30,22 @@ public class ParkingLot {
         return slot.park(car);
     }
 
-    public Car unPark(String id) throws Exception {
+    private ParkingSlot getParkedCarSlot(String id) {
         Optional<ParkingSlot> slot = slots.stream().filter(p -> p.isValidId(id)).findFirst();
-        if (slot.isPresent()) {
-            return slot.get().unPark(id);
+        return slot.orElse(null);
+    }
+
+    public Car unPark(String id) throws Exception {
+        ParkingSlot slot = this.getParkedCarSlot(id);
+        if (slot == null) {
+            throw new Exception("Car is not parked in slot.");
         }
 
-        return null;
+        return slot.unPark(id);
     }
 
     public boolean isFull() {
         long slotCount = slots.stream().filter(p -> !p.isFree()).count();
-        return slotCount == (long) slots.size();
-    }
-
-    public boolean isEmpty() {
-        long slotCount = slots.stream().filter(ParkingSlot::isFree).count();
         return slotCount == (long) slots.size();
     }
 }

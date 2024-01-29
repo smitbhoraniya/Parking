@@ -57,6 +57,6 @@ public class ParkingLotTest {
         Car car1 = new Car("123Abc", CarColor.WHITE);
         String id = parkingLot.park(car1);
 
-        assertNull(parkingLot.unPark("123"));
+        assertThrows(Exception.class, () -> parkingLot.unPark("123"));
     }
 }
