@@ -28,10 +28,15 @@ public class ParkingSlot {
             throw new Exception("Slot is empty.");
         }
         this.isSlotAvailable = true;
-        return this.car;
+        Car car = this.car;
+        this.car = null;
+        return car;
     }
 
     public boolean isValidCarParked(Car car) {
-        return Objects.equals(car.getRegistrationNumber(), this.car.getRegistrationNumber());
+        if (!this.isSlotAvailable) {
+            return car == this.car;
+        }
+        return false;
     }
 }

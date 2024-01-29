@@ -1,15 +1,24 @@
 package org.example;
 
+import java.util.Objects;
+
 public class Car {
-    private String registrationNumber;
-    private CarColor color;
+    private final String registrationNumber;
+    private final CarColor color;
 
     public Car(String registrationNumber, CarColor color) {
         this.registrationNumber = registrationNumber;
         this.color = color;
     }
 
-    public String getRegistrationNumber() {
-        return this.registrationNumber;
+    @Override
+    public boolean equals(Object o) {
+        if (o == this) {
+            return true;
+        }
+        if (!(o instanceof Car c)) {
+            return false;
+        }
+        return Objects.equals(c.registrationNumber, this.registrationNumber) && c.color == this.color;
     }
 }

@@ -9,7 +9,16 @@ import static org.junit.jupiter.api.Assertions.*;
 public class ParkingLotTest {
     @Test
     public void validParkingLot() {
-        assertDoesNotThrow(() -> new ParkingLot(0));
+        assertDoesNotThrow(() -> new ParkingLot(1));
+    }
+
+    @Test
+    public void inValidParkingLot() {
+        Exception exception = assertThrows(IllegalArgumentException.class, () -> new ParkingLot(0));
+
+        String actual = exception.getMessage();
+        String expected = "Number of slots should be greater than zero.";
+        assertEquals(expected, actual);
     }
 
     @Test
@@ -47,10 +56,8 @@ public class ParkingLotTest {
         ParkingSlot slot2 = parkingLot.getAvailableSlot();
         slot2.park(car2);
 
-        Exception exception = assertThrows(Exception.class, parkingLot::getAvailableSlot);
+        ParkingSlot slot = parkingLot.getAvailableSlot();
 
-        String actual = exception.getMessage();
-        String expected = "No slots are Available.";
-        assertEquals(expected, actual);
+        assertNull(slot);
     }
 }
