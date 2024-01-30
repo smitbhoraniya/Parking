@@ -7,14 +7,15 @@ import org.example.exceptions.SlotNotFoundException;
 import java.util.ArrayList;
 import java.util.List;
 
-public class ParkingLotManager {
+public class Attendant {
     private final List<ParkingLot> parkingLots;
 
-    public ParkingLotManager(int numberOfParkingLots) {
-        this.parkingLots = new ArrayList<>(numberOfParkingLots);
-        for (int i = 0; i < numberOfParkingLots; i++) {
-            parkingLots.add(new ParkingLot(1));
-        }
+    public Attendant() {
+        this.parkingLots = new ArrayList<>();
+    }
+
+    public void addParkingLot(ParkingLot parkingLot) {
+        parkingLots.add(parkingLot);
     }
 
     public String park(Car car) throws SlotNotFoundException, SlotIsOccupiedException {
@@ -28,7 +29,7 @@ public class ParkingLotManager {
         throw new SlotNotFoundException("All slots are occupied.");
     }
 
-    public Car unPark(String id) throws CarNotFoundException, SlotNotFoundException {
+    public Car unPark(String id) throws CarNotFoundException {
         for (ParkingLot parkingLot: parkingLots) {
             Car car = parkingLot.unPark(id);
             if (car != null) {

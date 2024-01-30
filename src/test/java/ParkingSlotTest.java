@@ -61,7 +61,7 @@ public class ParkingSlotTest {
         ParkingSlot slot = new ParkingSlot();
         Car car = new Car("123Abc", CarColor.BLACK);
 
-        assertThrows(SlotNotFoundException.class, () -> slot.unPark("abc"));
+        assertThrows(CarNotFoundException.class, () -> slot.unPark("abc"));
     }
 
     @Test

@@ -5,19 +5,27 @@ import org.example.exceptions.SlotIsOccupiedException;
 import org.example.exceptions.SlotNotFoundException;
 
 import java.util.ArrayList;
+import java.util.List;
 import java.util.Optional;
 
 public class ParkingLot {
     private final ArrayList<ParkingSlot> slots;
+    private final List<Attendant> attendants;
 
     public ParkingLot(int numberOfSlots) {
         if (numberOfSlots <= 0) {
             throw new IllegalArgumentException("Number of slots should be greater than zero.");
         }
         this.slots = new ArrayList<>(numberOfSlots);
+        this.attendants = new ArrayList<>();
         for (int i = 0; i < numberOfSlots; i++) {
             slots.add(new ParkingSlot());
         }
+    }
+
+    public void addAttendant(Attendant attendant) {
+        attendants.add(attendant);
+        attendant.addParkingLot(this);
     }
 
     private ParkingSlot getAvailableSlot() {
@@ -39,7 +47,7 @@ public class ParkingLot {
         return slot.orElse(null);
     }
 
-    public Car unPark(String id) throws CarNotFoundException, SlotNotFoundException {
+    public Car unPark(String id) throws CarNotFoundException {
         ParkingSlot slot = this.getParkedCarSlot(id);
         if (slot == null) {
             throw new CarNotFoundException("Car is not parked in slot.");

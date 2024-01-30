@@ -1,5 +1,6 @@
 package org.example;
 
+import org.example.exceptions.CarNotFoundException;
 import org.example.exceptions.SlotIsOccupiedException;
 import org.example.exceptions.SlotNotFoundException;
 
@@ -24,9 +25,9 @@ public class ParkingSlot {
         return this.id;
     }
 
-    public Car unPark(String id) throws SlotNotFoundException, UnsupportedOperationException {
+    public Car unPark(String id) throws CarNotFoundException, UnsupportedOperationException {
         if (this.isFree()) {
-            throw new SlotNotFoundException("Slot is empty.");
+            throw new CarNotFoundException("Slot is empty.");
         }
         if (!this.isValidId(id)) {
             throw new UnsupportedOperationException("Don't have an authorization to unpark.");
