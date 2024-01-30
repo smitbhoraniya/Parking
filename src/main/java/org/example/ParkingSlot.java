@@ -2,7 +2,6 @@ package org.example;
 
 import org.example.exceptions.CarNotFoundException;
 import org.example.exceptions.SlotIsOccupiedException;
-import org.example.exceptions.SlotNotFoundException;
 
 import java.util.Objects;
 import java.util.UUID;
@@ -36,13 +35,6 @@ public class ParkingSlot {
         this.car = null;
         this.id = null;
         return car;
-    }
-
-    public boolean isValidCarParked(Car car) {
-        if (!this.isFree()) {
-            return car == this.car;
-        }
-        return false;
     }
 
     public boolean isValidId(String id) {

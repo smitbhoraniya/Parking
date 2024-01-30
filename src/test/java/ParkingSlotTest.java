@@ -3,7 +3,6 @@ import org.example.CarColor;
 import org.example.ParkingSlot;
 import org.example.exceptions.CarNotFoundException;
 import org.example.exceptions.SlotIsOccupiedException;
-import org.example.exceptions.SlotNotFoundException;
 import org.junit.jupiter.api.Test;
 
 import static org.junit.jupiter.api.Assertions.*;
@@ -11,7 +10,7 @@ import static org.junit.jupiter.api.Assertions.*;
 public class ParkingSlotTest {
     @Test
     public void validParkingSlot() {
-        assertDoesNotThrow(() -> new ParkingSlot());
+        assertDoesNotThrow(ParkingSlot::new);
     }
 
     @Test
@@ -57,9 +56,8 @@ public class ParkingSlotTest {
     }
 
     @Test
-    public void shouldNotUnParkCarFromEmptySlot() throws Exception {
+    public void shouldNotUnParkCarFromEmptySlot() {
         ParkingSlot slot = new ParkingSlot();
-        Car car = new Car("123Abc", CarColor.BLACK);
 
         assertThrows(CarNotFoundException.class, () -> slot.unPark("abc"));
     }
@@ -83,18 +81,5 @@ public class ParkingSlotTest {
         Car unParkedCar = slot.unPark(id);
 
         assertNotEquals(car2, unParkedCar);
-    }
-
-    @Test
-    public void isValidCarParkedInSlot() throws Exception {
-        ParkingSlot slot = new ParkingSlot();
-        Car car1 = new Car("123Abc", CarColor.BLUE);
-        Car car2 = new Car("123Efg", CarColor.BLUE);
-
-        slot.park(car1);
-
-        boolean actual = slot.isValidCarParked(car2);
-        boolean expected = false;
-        assertEquals(expected, actual);
     }
 }

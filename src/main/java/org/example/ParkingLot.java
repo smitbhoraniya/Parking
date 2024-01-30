@@ -2,42 +2,37 @@ package org.example;
 
 import org.example.exceptions.CarNotFoundException;
 import org.example.exceptions.SlotIsOccupiedException;
-import org.example.exceptions.SlotNotFoundException;
 
 import java.util.ArrayList;
-import java.util.List;
 import java.util.Optional;
+import java.util.stream.Stream;
 
 public class ParkingLot {
     private final ArrayList<ParkingSlot> slots;
-    private final List<Attendant> attendants;
 
     public ParkingLot(int numberOfSlots) {
         if (numberOfSlots <= 0) {
             throw new IllegalArgumentException("Number of slots should be greater than zero.");
         }
         this.slots = new ArrayList<>(numberOfSlots);
-        this.attendants = new ArrayList<>();
         for (int i = 0; i < numberOfSlots; i++) {
             slots.add(new ParkingSlot());
         }
     }
 
-    public void addAttendant(Attendant attendant) {
-        attendants.add(attendant);
-        attendant.addParkingLot(this);
-    }
-
-    private ParkingSlot getAvailableSlot() {
-        Optional<ParkingSlot> slot = slots.stream().filter(ParkingSlot::isFree).findFirst();
-
+    private ParkingSlot getAvailableSlot(Strategy... strategys) {
+        Strategy strategy = strategys.length > 0 ? strategys[0]: Strategy.NEAREST;
+        Stream<ParkingSlot> slotStream = slots.stream().filter(ParkingSlot::isFree);
+        Optional<ParkingSlot> slot = Strategy.FARTHEST == strategy ?
+                slotStream.reduce((first, second) -> second) :
+                slotStream.findFirst();
         return slot.orElse(null);
     }
 
-    public String park(Car car) throws SlotNotFoundException, SlotIsOccupiedException {
-        ParkingSlot slot = this.getAvailableSlot();
+    public String park(Car car, Strategy... strategy) throws SlotIsOccupiedException {
+        ParkingSlot slot = this.getAvailableSlot(strategy);
         if (slot == null) {
-            throw new SlotNotFoundException("Parking lot is full.");
+            return null;
         }
         return slot.park(car);
     }
@@ -50,7 +45,7 @@ public class ParkingLot {
     public Car unPark(String id) throws CarNotFoundException {
         ParkingSlot slot = this.getParkedCarSlot(id);
         if (slot == null) {
-            throw new CarNotFoundException("Car is not parked in slot.");
+            return null;
         }
 
         return slot.unPark(id);

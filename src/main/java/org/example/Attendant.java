@@ -9,18 +9,20 @@ import java.util.List;
 
 public class Attendant {
     private final List<ParkingLot> parkingLots;
+    private final Strategy strategy;
 
-    public Attendant() {
+    public Attendant(Strategy... strategy) {
         this.parkingLots = new ArrayList<>();
+        this.strategy = strategy.length > 0 ? strategy[0]: Strategy.NEAREST;
     }
 
-    public void addParkingLot(ParkingLot parkingLot) {
+    public void assign(ParkingLot parkingLot) {
         parkingLots.add(parkingLot);
     }
 
     public String park(Car car) throws SlotNotFoundException, SlotIsOccupiedException {
         for (ParkingLot parkingLot: parkingLots) {
-            String id = parkingLot.park(car);
+            String id = parkingLot.park(car, strategy);
             if (id != null) {
                 return id;
             }
