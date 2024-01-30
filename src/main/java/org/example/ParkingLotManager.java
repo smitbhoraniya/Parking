@@ -1,5 +1,9 @@
 package org.example;
 
+import org.example.exceptions.CarNotFoundException;
+import org.example.exceptions.SlotIsOccupiedException;
+import org.example.exceptions.SlotNotFoundException;
+
 import java.util.ArrayList;
 import java.util.List;
 
@@ -13,7 +17,7 @@ public class ParkingLotManager {
         }
     }
 
-    public String park(Car car) throws Exception {
+    public String park(Car car) throws SlotNotFoundException, SlotIsOccupiedException {
         for (ParkingLot parkingLot: parkingLots) {
             String id = parkingLot.park(car);
             if (id != null) {
@@ -21,10 +25,10 @@ public class ParkingLotManager {
             }
         }
 
-        throw new Exception("All slots are occupied.");
+        throw new SlotNotFoundException("All slots are occupied.");
     }
 
-    public Car unPark(String id) throws Exception {
+    public Car unPark(String id) throws CarNotFoundException, SlotNotFoundException {
         for (ParkingLot parkingLot: parkingLots) {
             Car car = parkingLot.unPark(id);
             if (car != null) {
@@ -32,6 +36,6 @@ public class ParkingLotManager {
             }
         }
 
-        throw new Exception("No car parked with this id.");
+        throw new CarNotFoundException("No car parked with this id.");
     }
 }

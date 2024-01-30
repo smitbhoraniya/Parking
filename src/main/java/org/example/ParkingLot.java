@@ -1,5 +1,9 @@
 package org.example;
 
+import org.example.exceptions.CarNotFoundException;
+import org.example.exceptions.SlotIsOccupiedException;
+import org.example.exceptions.SlotNotFoundException;
+
 import java.util.ArrayList;
 import java.util.Optional;
 
@@ -22,10 +26,10 @@ public class ParkingLot {
         return slot.orElse(null);
     }
 
-    public String park(Car car) throws Exception {
+    public String park(Car car) throws SlotNotFoundException, SlotIsOccupiedException {
         ParkingSlot slot = this.getAvailableSlot();
         if (slot == null) {
-            throw new Exception("Parking lot is full.");
+            throw new SlotNotFoundException("Parking lot is full.");
         }
         return slot.park(car);
     }
@@ -35,10 +39,10 @@ public class ParkingLot {
         return slot.orElse(null);
     }
 
-    public Car unPark(String id) throws Exception {
+    public Car unPark(String id) throws CarNotFoundException, SlotNotFoundException {
         ParkingSlot slot = this.getParkedCarSlot(id);
         if (slot == null) {
-            throw new Exception("Car is not parked in slot.");
+            throw new CarNotFoundException("Car is not parked in slot.");
         }
 
         return slot.unPark(id);

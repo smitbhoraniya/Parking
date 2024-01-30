@@ -1,6 +1,9 @@
 import org.example.Car;
 import org.example.CarColor;
 import org.example.ParkingSlot;
+import org.example.exceptions.CarNotFoundException;
+import org.example.exceptions.SlotIsOccupiedException;
+import org.example.exceptions.SlotNotFoundException;
 import org.junit.jupiter.api.Test;
 
 import static org.junit.jupiter.api.Assertions.*;
@@ -39,10 +42,7 @@ public class ParkingSlotTest {
         slot.park(car);
         Car car2 = new Car("123Efg", CarColor.BLUE);
 
-        Exception exception = assertThrows(Exception.class, () -> slot.park(car2));
-        String actual = exception.getMessage();
-        String expected = "Car is already parked in this slot.";
-        assertEquals(expected, actual);
+        assertThrows(SlotIsOccupiedException.class, () -> slot.park(car2));
     }
 
     @Test
@@ -61,11 +61,7 @@ public class ParkingSlotTest {
         ParkingSlot slot = new ParkingSlot();
         Car car = new Car("123Abc", CarColor.BLACK);
 
-        Exception exception = assertThrows(Exception.class, () -> slot.unPark("abc"));
-
-        String actual = exception.getMessage();
-        String expected = "Slot is empty.";
-        assertEquals(expected, actual);
+        assertThrows(SlotNotFoundException.class, () -> slot.unPark("abc"));
     }
 
     @Test
@@ -74,7 +70,7 @@ public class ParkingSlotTest {
         Car car = new Car("123Abc", CarColor.BLACK);
         slot.park(car);
 
-        assertThrows(Exception.class, () -> slot.unPark("abc"));
+        assertThrows(UnsupportedOperationException.class, () -> slot.unPark("abc"));
     }
 
     @Test

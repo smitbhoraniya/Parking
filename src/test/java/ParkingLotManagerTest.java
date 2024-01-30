@@ -1,4 +1,6 @@
 import org.example.*;
+import org.example.exceptions.CarNotFoundException;
+import org.example.exceptions.SlotNotFoundException;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mock;
 
@@ -22,7 +24,8 @@ public class ParkingLotManagerTest {
         Car car = new Car("Abc", CarColor.BLUE);
 
         manager.park(car);
-        assertThrows(Exception.class, () -> manager.park(car));
+
+        assertThrows(SlotNotFoundException.class, () -> manager.park(car));
     }
 
     @Test
@@ -42,6 +45,6 @@ public class ParkingLotManagerTest {
         Car car = new Car("Abc", CarColor.BLUE);
         manager.park(car);
 
-        assertThrows(Exception.class, () -> manager.unPark("1"));
+        assertThrows(CarNotFoundException.class, () -> manager.unPark("1"));
     }
 }

@@ -1,5 +1,8 @@
 package org.example;
 
+import org.example.exceptions.SlotIsOccupiedException;
+import org.example.exceptions.SlotNotFoundException;
+
 import java.util.Objects;
 import java.util.UUID;
 
@@ -11,9 +14,9 @@ public class ParkingSlot {
         return this.car == null;
     }
 
-    public String park(Car car) throws Exception {
+    public String park(Car car) throws SlotIsOccupiedException {
         if (!this.isFree()) {
-            throw new Exception("Car is already parked in this slot.");
+            throw new SlotIsOccupiedException("Car is already parked in this slot.");
         }
         this.car = car;
 
@@ -21,12 +24,12 @@ public class ParkingSlot {
         return this.id;
     }
 
-    public Car unPark(String id) throws Exception {
+    public Car unPark(String id) throws SlotNotFoundException, UnsupportedOperationException {
         if (this.isFree()) {
-            throw new Exception("Slot is empty.");
+            throw new SlotNotFoundException("Slot is empty.");
         }
         if (!this.isValidId(id)) {
-            throw new Exception("Don't have an authorization to unpark.");
+            throw new UnsupportedOperationException("Don't have an authorization to unpark.");
         }
         Car car = this.car;
         this.car = null;
