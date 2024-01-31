@@ -19,7 +19,6 @@ public class ParkingSlot {
             throw new SlotIsOccupiedException("Car is already parked in this slot.");
         }
         this.car = car;
-
         this.id = UUID.randomUUID().toString();
         return this.id;
     }

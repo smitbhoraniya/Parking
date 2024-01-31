@@ -151,14 +151,50 @@ public class AttendantTest {
     @Test
     public void parkCarUsingFarthestStrategy() throws SlotNotFoundException, SlotIsOccupiedException {
         ParkingLot parkingLot = new ParkingLot(2);
+        ParkingLot parkingLot1 = new ParkingLot(2);
         Attendant attendant = new Attendant(Strategy.FARTHEST);
         attendant.assign(parkingLot);
+        attendant.assign(parkingLot1);
         Car car = new Car("Abc", CarColor.WHITE);
+        Car car1 = new Car("Efg", CarColor.WHITE);
+        Car car2 = new Car("Poi", CarColor.WHITE);
 
         attendant.park(car);
+        attendant.park(car1);
+        attendant.park(car2);
 
-        // TODO: How to check car is parked in last empty slot.
+        assertTrue(parkingLot1.isFull());
+        assertFalse(parkingLot.isFull());
     }
 
+    @Test
+    public void notifyAttendantWhenParkingLotIsFull() throws SlotNotFoundException, SlotIsOccupiedException {
+        ParkingLot parkingLot = new ParkingLot(1);
+        Observer attendant = mock(Attendant.class);
+        Observer attendant1 = mock(Attendant.class);
+        NotificationBus.getInstance().subscribe(attendant, ParkingLotEvent.FULL);
+        NotificationBus.getInstance().subscribe(attendant1, ParkingLotEvent.FULL);
+        Car car1 = new Car("Abc456", CarColor.WHITE);
 
+        parkingLot.park(car1);
+
+        verify(attendant).notify(ParkingLotEvent.FULL, parkingLot);
+        verify(attendant1).notify(ParkingLotEvent.FULL, parkingLot);
+    }
+
+    @Test
+    public void notifyAttendantWhenParkingLotIsEmpty() throws SlotNotFoundException, SlotIsOccupiedException, CarNotFoundException {
+        ParkingLot parkingLot = new ParkingLot(1);
+        Observer attendant = mock(Attendant.class);
+        Observer attendant1 = mock(Attendant.class);
+        NotificationBus.getInstance().subscribe(attendant, ParkingLotEvent.EMPTY);
+        NotificationBus.getInstance().subscribe(attendant1, ParkingLotEvent.EMPTY);
+        Car car1 = new Car("Abc456", CarColor.WHITE);
+
+        String id = parkingLot.park(car1);
+        parkingLot.unPark(id);
+
+        verify(attendant).notify(ParkingLotEvent.EMPTY, parkingLot);
+        verify(attendant1).notify(ParkingLotEvent.EMPTY, parkingLot);
+    }
 }

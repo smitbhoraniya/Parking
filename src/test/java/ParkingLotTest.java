@@ -1,4 +1,6 @@
 import org.example.*;
+import org.example.exceptions.CarNotFoundException;
+import org.example.exceptions.SlotNotFoundException;
 import org.junit.jupiter.api.Test;
 
 import static org.junit.jupiter.api.Assertions.*;
@@ -34,7 +36,7 @@ public class ParkingLotTest {
         Car car2 = new Car("123Efg", CarColor.BLACK);
         parkingLot.park(car1);
 
-        assertNull(parkingLot.park(car2));
+        assertThrows(SlotNotFoundException.class, () -> parkingLot.park(car2));
     }
 
     @Test
@@ -54,6 +56,6 @@ public class ParkingLotTest {
         Car car1 = new Car("123Abc", CarColor.WHITE);
         parkingLot.park(car1);
 
-        assertNull(parkingLot.unPark("123"));
+        assertThrows(CarNotFoundException.class, () -> parkingLot.unPark("123"));
     }
 }
