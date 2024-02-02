@@ -7,12 +7,12 @@ import java.util.Map;
 
 public class NotificationBus {
     private static final NotificationBus INSTANCE = new NotificationBus();
-    private Map<ParkingLotEvent, List<Observer>> subscribers;
+    private final Map<ParkingLotEvent, List<Observer>> subscribers;
     public static NotificationBus getInstance() {
         return INSTANCE;
     }
 
-    public NotificationBus() {
+    private NotificationBus() {
         this.subscribers = new HashMap<>();
         for (ParkingLotEvent event: ParkingLotEvent.values()) {
             this.subscribers.put(event, new ArrayList<>());

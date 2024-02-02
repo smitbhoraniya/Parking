@@ -5,9 +5,7 @@ import org.example.exceptions.SlotIsOccupiedException;
 import org.example.exceptions.SlotNotFoundException;
 
 import java.util.ArrayList;
-import java.util.List;
 import java.util.Optional;
-import java.util.stream.Stream;
 
 public class ParkingLot {
     private final ArrayList<ParkingSlot> slots;
@@ -70,5 +68,9 @@ public class ParkingLot {
     public boolean isEmpty() {
         long slotCount = slots.stream().filter(ParkingSlot::isFree).count();
         return slotCount == (long) slots.size();
+    }
+
+    public int emptySlotCount() {
+        return (int) slots.stream().filter(ParkingSlot::isFree).count();
     }
 }

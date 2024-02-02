@@ -61,7 +61,7 @@ public class AttendantTest {
     }
 
     @Test
-    public void shouldParkCarInFirstParkingLotWhenAllParkingLotIsAvailable() throws SlotNotFoundException, SlotIsOccupiedException {
+    public void shouldParkCarInFirstParkingLotWhenAllParkingLotIsAvailable() throws SlotNotFoundException {
         Attendant attendant = new Attendant();
         ParkingLot parkingLot = new ParkingLot(1);
         attendant.assign(parkingLot);
@@ -93,7 +93,7 @@ public class AttendantTest {
     }
 
     @Test
-    public void oneAttendantCanParkInMultipleParkingLot() throws SlotNotFoundException, SlotIsOccupiedException {
+    public void oneAttendantCanParkInMultipleParkingLot() throws SlotNotFoundException {
         ParkingLot parkingLot = new ParkingLot(1);
         ParkingLot parkingLot2 = new ParkingLot(1);
         Attendant attendant = new Attendant();
@@ -111,7 +111,7 @@ public class AttendantTest {
 
 
     @Test
-    public void attendantCanUnparkCarWhichParkedByOtherAttendant() throws SlotNotFoundException, SlotIsOccupiedException, CarNotFoundException {
+    public void attendantCanUnparkCarWhichParkedByOtherAttendant() throws SlotNotFoundException, CarNotFoundException {
         ParkingLot parkingLot = new ParkingLot(2);
         Attendant attendant = new Attendant();
         Attendant attendant1 = new Attendant();
@@ -128,7 +128,7 @@ public class AttendantTest {
     }
 
     @Test
-    public void makeParkingLotFullAndUnparkCarAndParkTheCar() throws SlotNotFoundException, SlotIsOccupiedException, CarNotFoundException {
+    public void makeParkingLotFullAndUnparkCarAndParkTheCar() throws SlotNotFoundException, CarNotFoundException {
         ParkingLot parkingLot = new ParkingLot(2);
         ParkingLot parkingLot1 = new ParkingLot(2);
         Attendant attendant = new Attendant();
@@ -149,7 +149,26 @@ public class AttendantTest {
     }
 
     @Test
-    public void parkCarUsingFarthestStrategy() throws SlotNotFoundException, SlotIsOccupiedException {
+    public void parkCarUsingNearestStrategy() throws SlotNotFoundException {
+        ParkingLot parkingLot = new ParkingLot(2);
+        ParkingLot parkingLot1 = new ParkingLot(2);
+        Attendant attendant = new Attendant(Strategy.NEAREST);
+        attendant.assign(parkingLot);
+        attendant.assign(parkingLot1);
+        Car car = new Car("Abc", CarColor.WHITE);
+        Car car1 = new Car("Efg", CarColor.WHITE);
+        Car car2 = new Car("Poi", CarColor.WHITE);
+
+        attendant.park(car);
+        attendant.park(car1);
+        attendant.park(car2);
+
+        assertFalse(parkingLot1.isFull());
+        assertTrue(parkingLot.isFull());
+    }
+
+    @Test
+    public void parkCarUsingFarthestStrategy() throws SlotNotFoundException {
         ParkingLot parkingLot = new ParkingLot(2);
         ParkingLot parkingLot1 = new ParkingLot(2);
         Attendant attendant = new Attendant(Strategy.FARTHEST);
@@ -196,5 +215,42 @@ public class AttendantTest {
 
         verify(attendant).notify(ParkingLotEvent.EMPTY, parkingLot);
         verify(attendant1).notify(ParkingLotEvent.EMPTY, parkingLot);
+    }
+
+    @Test
+    public void changeStrategyAndParkCar() throws SlotNotFoundException {
+        ParkingLot parkingLot = new ParkingLot(2);
+        ParkingLot parkingLot1 = new ParkingLot(2);
+        Attendant attendant = new Attendant(Strategy.NEAREST);
+        attendant.assign(parkingLot);
+        attendant.assign(parkingLot1);
+        Car car = new Car("Abc", CarColor.WHITE);
+        Car car1 = new Car("Efg", CarColor.WHITE);
+        Car car2 = new Car("Poi", CarColor.WHITE);
+
+        attendant.park(car);
+        attendant.changeStrategy(Strategy.FARTHEST);
+        attendant.park(car1);
+        attendant.park(car2);
+
+        assertTrue(parkingLot1.isFull());
+        assertFalse(parkingLot.isFull());
+    }
+
+    @Test
+    public void parkCarsUsingDistributedStrategy() throws SlotNotFoundException {
+        ParkingLot parkingLot = new ParkingLot(2);
+        ParkingLot parkingLot1 = new ParkingLot(2);
+        Attendant attendant = new Attendant(Strategy.DISTRIBUTED);
+        attendant.assign(parkingLot);
+        attendant.assign(parkingLot1);
+        Car car = new Car("Abc123", CarColor.WHITE);
+        Car car1 = new Car("Abc345", CarColor.WHITE);
+
+        attendant.park(car);
+        attendant.park(car1);
+
+        assertEquals(1, parkingLot1.emptySlotCount());
+        assertEquals(1, parkingLot.emptySlotCount());
     }
 }

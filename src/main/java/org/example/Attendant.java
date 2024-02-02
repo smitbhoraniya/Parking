@@ -5,12 +5,11 @@ import org.example.exceptions.SlotIsOccupiedException;
 import org.example.exceptions.SlotNotFoundException;
 
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
 
 public class Attendant implements Observer {
     private final List<ParkingLot> parkingLots;
-    private final Strategy strategy;
+    private Strategy strategy;
 
     public Attendant(Strategy... strategy) {
         this.parkingLots = new ArrayList<>();
@@ -19,6 +18,7 @@ public class Attendant implements Observer {
 
     public void assign(ParkingLot parkingLot) {
         parkingLots.add(parkingLot);
+        NotificationBus.getInstance().subscribe(this, ParkingLotEvent.EMPTY);
     }
 
     public String park(Car car) throws SlotNotFoundException {
@@ -53,5 +53,9 @@ public class Attendant implements Observer {
         }
 
         throw new CarNotFoundException("No car parked with this id.");
+    }
+
+    public void changeStrategy(Strategy strategy) {
+        this.strategy = strategy;
     }
 }
